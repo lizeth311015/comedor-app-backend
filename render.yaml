@@ -2,16 +2,18 @@ services:
   - type: web
     name: comedor-app-backend
     env: java
-    plan: free
+    region: oregon
+    branch: main
     buildCommand: ./mvnw clean package
     startCommand: java -jar target/comedor-app-0.0.1-SNAPSHOT.jar
-    region: oregon
     envVars:
       - key: SPRING_DATASOURCE_URL
-        sync: false
+        value: jdbc:postgresql://dpg-d0jp0c24d50c73fi85c0-a:5432/comedor_app
       - key: SPRING_DATASOURCE_USERNAME
-        sync: false
+        value: comedor_app_user
       - key: SPRING_DATASOURCE_PASSWORD
-        sync: false
+        value: EswlonnVdzmh9AoMTEbYBii6kngjrMLF
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
+
+
