@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/pedidos")
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class PedidoController {
 
     private final PedidoService pedidoService;
