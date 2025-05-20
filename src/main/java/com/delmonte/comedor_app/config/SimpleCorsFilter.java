@@ -14,14 +14,17 @@ public class SimpleCorsFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
 
-        HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
+
+        // 👇 AQUI AGREGA ESTA LÍNEA
+        System.out.println(">>> CORS Filter ejecutado");
 
         response.setHeader("Access-Control-Allow-Origin", "https://comedor-app-frontend.onrender.com");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
-        response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        System.out.println(">>> CORS Filter ejecutado");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
