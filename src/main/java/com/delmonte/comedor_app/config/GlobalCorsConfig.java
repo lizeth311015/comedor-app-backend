@@ -1,41 +1,35 @@
 package com.delmonte.comedor_app.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.io.IOException;
 
-@Configuration
-public class GlobalCorsConfig {
+@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class GlobalCorsConfig implements Filter {
 
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+            throws IOException, ServletException {
 
-        // Permitir cookies (JSESSIONID, etc.)
-        config.setAllowCredentials(true);
+        HttpServletResponse response = (HttpServletResponse) res;
+        HttpServletRequest request = (HttpServletRequest) req;
 
-        // Aceptar solicitudes desde el frontend desplegado
-        config.setAllowedOrigins(Arrays.asList(
-                "https://comedor-app-frontend.onrender.com"
-        ));
+        response.setHeader("Access-Control-Allow-Origin", "https://comedor-app-frontend.onrender.com");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
 
-        // Métodos permitidos
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // Encabezados permitidos
-        config.setAllowedHeaders(Arrays.asList("*"));
-
-        // Encabezados visibles en la respuesta (opcional)
-        config.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
-
-        // Aplicar esta configuración a todas las rutas
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-
-        return new CorsFilter(source);
+        // Responder directamente a OPTIONS sin pasar al controlador
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            chain.doFilter(req, res);
+        }
     }
 }
